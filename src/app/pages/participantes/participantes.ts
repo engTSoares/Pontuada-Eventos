@@ -14,7 +14,14 @@ type DadosParticipante = Omit<Participante, 'id' | 'eventoId'>;
 @Component({
   selector: 'app-participantes',
   standalone: true,
-  imports: [FormsModule, RouterLink, TelefonePipe, FormaPagamentoPipe, IniciaisPipe, DiasParaPipe],
+  imports: [
+    FormsModule,
+    RouterLink,
+    TelefonePipe,
+    FormaPagamentoPipe,
+    IniciaisPipe,
+    DiasParaPipe
+  ],
   templateUrl: './participantes.html',
   styleUrl: './participantes.css'
 })
@@ -38,6 +45,8 @@ export class Participantes {
   participanteEmEdicao: number | null = null;
   mensagemErro = '';
 
+  private ultimoTelefoneValido = '';
+
   constructor() {
     if (!Number.isInteger(this.eventoId) || !this.evento) {
       void this.router.navigate(['/eventos/novo']);
@@ -57,6 +66,35 @@ export class Participantes {
     };
   }
 
+  atualizarTelefone(valor: string): void {
+    const digitos = valor.replace(/\D/g, '');
+
+    // Rejeita entradas com mais de 11 dígitos.
+    if (digitos.length > 11) {
+      this.formulario.telefone = this.ultimoTelefoneValido;
+      this.mensagemErro = 'Insira um número válido de telefone.';
+      return;
+    }
+
+    this.mensagemErro = '';
+
+    let telefoneFormatado = '';
+
+    if (digitos.length === 0) {
+      telefoneFormatado = '';
+    } else if (digitos.length <= 2) {
+      telefoneFormatado = `(${digitos}`;
+    } else if (digitos.length <= 7) {
+      telefoneFormatado = `(${digitos.slice(0, 2)}) ${digitos.slice(2)}`;
+    } else {
+      telefoneFormatado =
+        `(${digitos.slice(0, 2)}) ${digitos.slice(2, 7)}-${digitos.slice(7, 11)}`;
+    }
+
+    this.formulario.telefone = telefoneFormatado;
+    this.ultimoTelefoneValido = telefoneFormatado;
+  }
+
   salvar(): void {
     this.mensagemErro = '';
 
@@ -74,6 +112,16 @@ export class Participantes {
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.email)) {
       this.mensagemErro = 'Informe um e-mail válido.';
+      return;
+    }
+
+    const quantidadeDigitos = dados.telefone.replace(/\D/g, '').length;
+
+    if (
+      quantidadeDigitos !== 11 ||
+      !/^\(\d{2}\) \d{5}-\d{4}$/.test(dados.telefone)
+    ) {
+      this.mensagemErro = 'Insira um número válido de telefone.';
       return;
     }
 
@@ -97,17 +145,24 @@ export class Participantes {
 
   editar(participante: Participante): void {
     this.participanteEmEdicao = participante.id;
+
     this.formulario = {
       descricao: participante.descricao,
       email: participante.email,
       telefone: participante.telefone,
       formaPagamento: participante.formaPagamento
     };
+
+    this.ultimoTelefoneValido = participante.telefone;
+    this.atualizarTelefone(participante.telefone);
     this.mensagemErro = '';
   }
 
   excluir(participante: Participante): void {
-    const confirmar = confirm(`Deseja realmente excluir "${participante.descricao}"?`);
+    const confirmar = confirm(
+      `Deseja realmente excluir "${participante.descricao}"?`
+    );
+
     if (!confirmar) return;
 
     this.eventoService.excluirParticipante(this.eventoId, participante.id);
@@ -120,6 +175,7 @@ export class Participantes {
   cancelarEdicao(): void {
     this.formulario = this.formularioVazio();
     this.participanteEmEdicao = null;
+    this.ultimoTelefoneValido = '';
     this.mensagemErro = '';
   }
 }

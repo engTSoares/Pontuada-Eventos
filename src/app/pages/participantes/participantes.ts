@@ -1,0 +1,121 @@
+import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Evento } from '../../models/evento';
+import { FormaPagamento, Participante} from '../../models/participante';
+import { EventoService } from '../../services/evento.service';
+
+type DadosParticipante = Omit<Participante, 'id' | 'eventoId'>;
+
+@Component({
+  selector: 'app-participantes',
+  standalone: true,
+  imports: [FormsModule, RouterLink],
+  templateUrl: './participantes.html',
+  styleUrl: './participantes.css'
+})
+export class Participantes {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly eventoService = inject(EventoService);
+
+  readonly eventoId = Number(this.route.snapshot.paramMap.get('id'));
+  readonly evento: Evento | undefined = this.eventoService.obterEvento(this.eventoId);
+
+  readonly formasPagamento: FormaPagamento[] = [
+    'Pix',
+    'Dinheiro',
+    'Cartão de crédito',
+    'Cartão de débito',
+    'Transferência'
+  ];
+
+  formulario: DadosParticipante = this.formularioVazio();
+  participanteEmEdicao: number | null = null;
+  mensagemErro = '';
+
+  constructor() {
+    if (!Number.isInteger(this.eventoId) || !this.evento) {
+      void this.router.navigate(['/eventos/novo']);
+    }
+  }
+
+  get participantes(): Participante[] {
+    return this.eventoService.listarParticipantes(this.eventoId);
+  }
+
+  formularioVazio(): DadosParticipante {
+    return {
+      descricao: '',
+      email: '',
+      telefone: '',
+      formaPagamento: 'Pix'
+    };
+  }
+
+  salvar(): void {
+    this.mensagemErro = '';
+
+    const dados: DadosParticipante = {
+      descricao: this.formulario.descricao.trim(),
+      email: this.formulario.email.trim(),
+      telefone: this.formulario.telefone.trim(),
+      formaPagamento: this.formulario.formaPagamento
+    };
+
+    if (!dados.descricao || !dados.email || !dados.telefone || !dados.formaPagamento) {
+      this.mensagemErro = 'Preencha todos os campos obrigatórios.';
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.email)) {
+      this.mensagemErro = 'Informe um e-mail válido.';
+      return;
+    }
+
+    if (this.participanteEmEdicao === null) {
+      this.eventoService.adicionarParticipante(this.eventoId, dados);
+    } else {
+      const atualizado = this.eventoService.atualizarParticipante(
+        this.eventoId,
+        this.participanteEmEdicao,
+        dados
+      );
+
+      if (!atualizado) {
+        this.mensagemErro = 'Não foi possível localizar o participante para edição.';
+        return;
+      }
+    }
+
+    this.cancelarEdicao();
+  }
+
+  editar(participante: Participante): void {
+    this.participanteEmEdicao = participante.id;
+    this.formulario = {
+      descricao: participante.descricao,
+      email: participante.email,
+      telefone: participante.telefone,
+      formaPagamento: participante.formaPagamento
+    };
+    this.mensagemErro = '';
+  }
+
+  excluir(participante: Participante): void {
+    const confirmar = confirm(`Deseja realmente excluir "${participante.descricao}"?`);
+    if (!confirmar) return;
+
+    this.eventoService.excluirParticipante(this.eventoId, participante.id);
+
+    if (this.participanteEmEdicao === participante.id) {
+      this.cancelarEdicao();
+    }
+  }
+
+  cancelarEdicao(): void {
+    this.formulario = this.formularioVazio();
+    this.participanteEmEdicao = null;
+    this.mensagemErro = '';
+  }
+}

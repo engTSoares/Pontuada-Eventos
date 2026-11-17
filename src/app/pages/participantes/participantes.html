@@ -1,0 +1,123 @@
+<div class="pagina-participantes">
+  @if (evento) {
+    <a class="link-voltar" [routerLink]="['/eventos', evento.id]">← Voltar para o evento</a>
+
+    <header class="cabecalho">
+      <span class="identificador">EVENTO #{{ evento.id }}</span>
+      <h1>Participantes</h1>
+      <p>Gerencie os participantes vinculados ao evento <strong>{{ evento.titulo }}</strong>.</p>
+    </header>
+
+    <section class="card-formulario">
+      <h2>{{ participanteEmEdicao === null ? 'Adicionar participante' : 'Editar participante' }}</h2>
+
+      <form (ngSubmit)="salvar()" #formParticipante="ngForm" novalidate>
+        <div class="campo-grupo">
+          <label for="descricao">Descrição *</label>
+          <input
+            id="descricao"
+            name="descricao"
+            type="text"
+            [(ngModel)]="formulario.descricao"
+            placeholder="Nome ou identificação do participante"
+            required
+          />
+        </div>
+
+        <div class="linha-dupla">
+          <div class="campo-grupo">
+            <label for="email">E-mail *</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              [(ngModel)]="formulario.email"
+              placeholder="participante@email.com"
+              required
+            />
+          </div>
+
+          <div class="campo-grupo">
+            <label for="telefone">Telefone *</label>
+            <input
+              id="telefone"
+              name="telefone"
+              type="tel"
+              [(ngModel)]="formulario.telefone"
+              placeholder="(71) 99999-9999"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="campo-grupo">
+          <label for="formaPagamento">Forma de pagamento *</label>
+          <select
+            id="formaPagamento"
+            name="formaPagamento"
+            [(ngModel)]="formulario.formaPagamento"
+            required
+          >
+            @for (forma of formasPagamento; track forma) {
+              <option [value]="forma">{{ forma }}</option>
+            }
+          </select>
+        </div>
+
+        @if (mensagemErro) {
+          <p class="mensagem-erro" role="alert">{{ mensagemErro }}</p>
+        }
+
+        <div class="acoes-formulario">
+          @if (participanteEmEdicao !== null) {
+            <button type="button" class="botao-secundario" (click)="cancelarEdicao()">Cancelar edição</button>
+          }
+          <button type="submit" class="botao-principal">
+            {{ participanteEmEdicao === null ? 'Adicionar participante' : 'Salvar alterações' }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="secao-lista">
+      <div class="cabecalho-lista">
+        <h2>Participantes cadastrados</h2>
+        <span class="contador">{{ participantes.length }}</span>
+      </div>
+
+      @for (participante of participantes; track participante.id) {
+        <article class="cartao-participante">
+          <div class="dados-participante">
+            <h3>{{ participante.descricao }}</h3>
+            <p><strong>E-mail:</strong> {{ participante.email }}</p>
+            <p><strong>Telefone:</strong> {{ participante.telefone }}</p>
+            <p><strong>Pagamento:</strong> {{ participante.formaPagamento }}</p>
+            <span class="id-participante">Participante #{{ participante.id }}</span>
+          </div>
+
+          <div class="acoes-participante">
+            <button
+              type="button"
+              class="botao-icone botao-editar"
+              (click)="editar(participante)"
+              [attr.aria-label]="'Editar ' + participante.descricao"
+              title="Editar participante"
+            >✏️</button>
+            <button
+              type="button"
+              class="botao-icone botao-excluir"
+              (click)="excluir(participante)"
+              [attr.aria-label]="'Excluir ' + participante.descricao"
+              title="Excluir participante"
+            >🗑️</button>
+          </div>
+        </article>
+      } @empty {
+        <div class="lista-vazia">
+          <p class="titulo-vazio">Nenhum participante cadastrado</p>
+          <p>Utilize o formulário acima para adicionar o primeiro participante deste evento.</p>
+        </div>
+      }
+    </section>
+  }
+</div>

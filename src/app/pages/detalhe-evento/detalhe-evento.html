@@ -1,0 +1,40 @@
+<div class="pagina-detalhe">
+  @if (evento) {
+    <a class="link-voltar" routerLink="/eventos/novo">← Voltar para eventos</a>
+
+    <section class="card-detalhe">
+      <div class="topo-detalhe">
+        <div>
+          <span class="identificador">EVENTO #{{ evento.id }}</span>
+          <h1>{{ evento.titulo }}</h1>
+        </div>
+        <span class="badge-local">{{ evento.local }}</span>
+      </div>
+
+      <div class="dados-evento">
+        <div>
+          <span class="rotulo">Data</span>
+          <strong>{{ evento.data }}</strong>
+        </div>
+        <div>
+          <span class="rotulo">Vagas</span>
+          <strong>{{ evento.vagas }}</strong>
+        </div>
+        <div>
+          <span class="rotulo">E-mail do responsável</span>
+          <strong>{{ evento.emailResponsavel }}</strong>
+        </div>
+        <div>
+          <span class="rotulo">Participantes cadastrados</span>
+          <strong>{{ quantidadeParticipantes }}</strong>
+        </div>
+      </div>
+
+      <div class="acoes-detalhe">
+        <a class="botao-participantes" [routerLink]="['/eventos', evento.id, 'participantes']">
+          Gerenciar participantes
+        </a>
+      </div>
+    </section>
+  }
+</div>

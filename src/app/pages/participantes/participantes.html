@@ -89,9 +89,11 @@
         <article class="cartao-participante">
           <div class="dados-participante">
             <h3>{{ participante.descricao }}</h3>
+            <span class="id-participante">Iniciais: {{ participante.descricao | iniciais }}</span>
             <p><strong>E-mail:</strong> {{ participante.email }}</p>
-            <p><strong>Telefone:</strong> {{ participante.telefone }}</p>
-            <p><strong>Pagamento:</strong> {{ participante.formaPagamento }}</p>
+            <p><strong>Telefone:</strong> {{ participante.telefone | telefone }}</p>
+            <p><strong>Pagamento:</strong> {{ participante.formaPagamento | formaPagamento }}</p>
+            <p><strong>Data do evento:</strong> {{ evento.data | diasPara }}</p>
             <span class="id-participante">Participante #{{ participante.id }}</span>
           </div>
 

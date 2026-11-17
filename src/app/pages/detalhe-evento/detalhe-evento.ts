@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Evento } from '../../models/evento';
@@ -6,7 +7,7 @@ import { EventoService } from '../../services/evento.service';
 @Component({
   selector: 'app-detalhe-evento',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, DatePipe],
   templateUrl: './detalhe-evento.html',
   styleUrl: './detalhe-evento.css'
 })

@@ -1,3 +1,4 @@
+import { DatePipe, DecimalPipe, UpperCasePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -16,7 +17,7 @@ type CampoEvento = 'titulo' | 'data' | 'local' | 'emailResponsavel' | 'vagas';
 @Component({
   selector: 'app-cadastro-evento',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, DatePipe, DecimalPipe, UpperCasePipe],
   templateUrl: './cadastro-evento.html',
   styleUrl: './cadastro-evento.css'
 })

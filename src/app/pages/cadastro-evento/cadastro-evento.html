@@ -123,7 +123,7 @@
         >
           <div class="topo-cartao">
             <span class="badge-id">ID #{{ item.id }}</span>
-            <span class="badge-local">{{ item.local }}</span>
+            <span class="badge-local">{{ item.local | uppercase }}</span>
           </div>
 
           <h3 class="titulo-evento">{{ item.titulo }}</h3>
@@ -131,11 +131,11 @@
           <div class="info-grid">
             <div class="info-item">
               <span class="info-rotulo">Data:</span>
-              <span class="info-valor">{{ item.data }}</span>
+              <span class="info-valor">{{ item.data | date:'dd/MM/yyyy' }}</span>
             </div>
             <div class="info-item">
               <span class="info-rotulo">Vagas:</span>
-              <span class="info-valor">{{ item.vagas }}</span>
+              <span class="info-valor">{{ item.vagas | number }}</span>
             </div>
             <div class="info-item info-larga">
               <span class="info-rotulo">Responsável:</span>

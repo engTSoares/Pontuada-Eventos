@@ -1,8 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { DiasParaPipe } from '../../pipes/dias-para-pipe';
+import { FormaPagamentoPipe } from '../../pipes/forma-pagamento-pipe';
+import { IniciaisPipe } from '../../pipes/iniciais-pipe';
+import { TelefonePipe } from '../../pipes/telefone-pipe';
 import { Evento } from '../../models/evento';
-import { FormaPagamento, Participante} from '../../models/participante';
+import { FormaPagamento, Participante } from '../../models/participante';
 import { EventoService } from '../../services/evento.service';
 
 type DadosParticipante = Omit<Participante, 'id' | 'eventoId'>;
@@ -10,7 +14,7 @@ type DadosParticipante = Omit<Participante, 'id' | 'eventoId'>;
 @Component({
   selector: 'app-participantes',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, TelefonePipe, FormaPagamentoPipe, IniciaisPipe, DiasParaPipe],
   templateUrl: './participantes.html',
   styleUrl: './participantes.css'
 })

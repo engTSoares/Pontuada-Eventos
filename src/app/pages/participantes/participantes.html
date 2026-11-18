@@ -1,3 +1,4 @@
+
 <div class="pagina-participantes">
   @if (evento) {
     <a class="link-voltar" [routerLink]="['/eventos', evento.id]">← Voltar para o evento</a>
@@ -46,9 +47,6 @@
               [(ngModel)]="formulario.telefone"
               (ngModelChange)="atualizarTelefone($event)"
               placeholder="(71) 99999-9999"
-              maxlength="15"
-              inputmode="numeric"
-              autocomplete="tel"
               required
             />
           </div>
@@ -74,15 +72,8 @@
 
         <div class="acoes-formulario">
           @if (participanteEmEdicao !== null) {
-            <button
-              type="button"
-              class="botao-secundario"
-              (click)="cancelarEdicao()"
-            >
-              Cancelar edição
-            </button>
+            <button type="button" class="botao-secundario" (click)="cancelarEdicao()">Cancelar edição</button>
           }
-
           <button type="submit" class="botao-principal">
             {{ participanteEmEdicao === null ? 'Adicionar participante' : 'Salvar alterações' }}
           </button>
@@ -100,19 +91,12 @@
         <article class="cartao-participante">
           <div class="dados-participante">
             <h3>{{ participante.descricao }}</h3>
-
-            <span class="id-participante">
-              Iniciais: {{ participante.descricao | iniciais }}
-            </span>
-
-            <p><strong>E-mail:</strong> {{ participante.email }}</p>
+            <span class="id-participante">Iniciais: {{ participante.descricao | iniciais }}</span>
+            <p><strong>E-mail:</strong> {{ participante.email | mascaraEmail }}</p>
             <p><strong>Telefone:</strong> {{ participante.telefone | telefone }}</p>
             <p><strong>Pagamento:</strong> {{ participante.formaPagamento | formaPagamento }}</p>
             <p><strong>Data do evento:</strong> {{ evento.data | diasPara }}</p>
-
-            <span class="id-participante">
-              Participante #{{ participante.id }}
-            </span>
+            <span class="id-participante">Participante #{{ participante.id }}</span>
           </div>
 
           <div class="acoes-participante">
@@ -123,7 +107,6 @@
               [attr.aria-label]="'Editar ' + participante.descricao"
               title="Editar participante"
             >✏️</button>
-
             <button
               type="button"
               class="botao-icone botao-excluir"

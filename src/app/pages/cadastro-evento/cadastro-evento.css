@@ -46,7 +46,8 @@
 }
 
 .campo-grupo input,
-.campo-grupo select {
+.campo-grupo select,
+.campo-grupo textarea {
   width: 100%;
   padding: 0.625rem 0.875rem;
   font-size: 0.95rem;
@@ -60,20 +61,29 @@
 }
 
 .campo-grupo input:focus,
-.campo-grupo select:focus {
+.campo-grupo select:focus,
+.campo-grupo textarea:focus {
   border-color: #0284c7;
   box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
 }
 
+.campo-grupo textarea {
+  min-height: 96px;
+  resize: vertical;
+  font-family: inherit;
+}
+
 /* Estado Inválido conforme especificação */
 .campo-grupo input.invalido,
-.campo-grupo select.invalido {
+.campo-grupo select.invalido,
+.campo-grupo textarea.invalido {
   border-color: #dc2626 !important;
   background-color: #fef2f2;
 }
 
 .campo-grupo input.invalido:focus,
-.campo-grupo select.invalido:focus {
+.campo-grupo select.invalido:focus,
+.campo-grupo textarea.invalido:focus {
   border-color: #dc2626 !important;
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18) !important;
 }
@@ -299,4 +309,11 @@
   font-size: 0.85rem;
   color: #64748b;
   margin: 0;
+}
+
+.descricao-evento {
+  margin: -0.35rem 0 1rem;
+  color: #475569;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }

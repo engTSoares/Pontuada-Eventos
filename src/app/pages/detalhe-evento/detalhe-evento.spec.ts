@@ -14,6 +14,7 @@ describe('DetalheEvento', () => {
   const eventoMock: Evento = {
     id: 1,
     titulo: 'Evento de teste',
+    descricao: 'Descrição do evento de teste',
     data: '2026-11-20',
     local: 'Auditório',
     emailResponsavel: 'teste@email.com',

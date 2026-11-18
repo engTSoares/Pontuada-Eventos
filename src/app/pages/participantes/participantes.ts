@@ -1,10 +1,14 @@
+
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { DiasParaPipe } from '../../pipes/dias-para-pipe';
+import { MascaraEmailPipe } from '../../pipes/mascara-email-pipe';
 import { FormaPagamentoPipe } from '../../pipes/forma-pagamento-pipe';
 import { IniciaisPipe } from '../../pipes/iniciais-pipe';
 import { TelefonePipe } from '../../pipes/telefone-pipe';
+
 import { Evento } from '../../models/evento';
 import { FormaPagamento, Participante } from '../../models/participante';
 import { EventoService } from '../../services/evento.service';
@@ -20,7 +24,8 @@ type DadosParticipante = Omit<Participante, 'id' | 'eventoId'>;
     TelefonePipe,
     FormaPagamentoPipe,
     IniciaisPipe,
-    DiasParaPipe
+    DiasParaPipe,
+    MascaraEmailPipe
   ],
   templateUrl: './participantes.html',
   styleUrl: './participantes.css'
@@ -31,7 +36,8 @@ export class Participantes {
   private readonly eventoService = inject(EventoService);
 
   readonly eventoId = Number(this.route.snapshot.paramMap.get('id'));
-  readonly evento: Evento | undefined = this.eventoService.obterEvento(this.eventoId);
+  readonly evento: Evento | undefined =
+    this.eventoService.obterEvento(this.eventoId);
 
   readonly formasPagamento: FormaPagamento[] = [
     'Pix',
@@ -45,7 +51,7 @@ export class Participantes {
   participanteEmEdicao: number | null = null;
   mensagemErro = '';
 
-  private ultimoTelefoneValido = '';
+  ultimoTelefoneValido = '';
 
   constructor() {
     if (!Number.isInteger(this.eventoId) || !this.evento) {
@@ -115,16 +121,6 @@ export class Participantes {
       return;
     }
 
-    const quantidadeDigitos = dados.telefone.replace(/\D/g, '').length;
-
-    if (
-      quantidadeDigitos !== 11 ||
-      !/^\(\d{2}\) \d{5}-\d{4}$/.test(dados.telefone)
-    ) {
-      this.mensagemErro = 'Insira um número válido de telefone.';
-      return;
-    }
-
     if (this.participanteEmEdicao === null) {
       this.eventoService.adicionarParticipante(this.eventoId, dados);
     } else {
@@ -154,7 +150,6 @@ export class Participantes {
     };
 
     this.ultimoTelefoneValido = participante.telefone;
-    this.atualizarTelefone(participante.telefone);
     this.mensagemErro = '';
   }
 
